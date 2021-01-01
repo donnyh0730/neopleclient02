@@ -1,7 +1,7 @@
 ﻿  AdressManager.cpp
-c:\users\dongwoong\documents\neopleclient02\adressmanager\adressmanager\adressmanager.cpp(24): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
-c:\users\dongwoong\documents\neopleclient02\adressmanager\adressmanager\adressmanager.cpp(83): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
-c:\users\dongwoong\documents\neopleclient02\adressmanager\adressmanager\adressmanager.cpp(106): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
+c:\users\dongwoong\documents\neopleclient02\adressmanager\adressmanager\adressmanager.cpp(72): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
+c:\users\dongwoong\documents\neopleclient02\adressmanager\adressmanager\adressmanager.cpp(127): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
+c:\users\dongwoong\documents\neopleclient02\adressmanager\adressmanager\adressmanager.cpp(222): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
   main.cpp
   코드를 생성하고 있습니다...
   AdressManager.vcxproj -> C:\Users\DongWoong\Documents\neopleclient02\AdressManager\Debug\AdressManager.exe

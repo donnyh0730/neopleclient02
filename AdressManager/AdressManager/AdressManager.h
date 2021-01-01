@@ -3,9 +3,21 @@
 #include <string>
 #include <fstream>
 #include <vector>
+#include <map>
 #include "json/json.h"
 #include "AdressInfo.h"
 using namespace std;
+
+enum Command
+{
+	Insert,
+	Delete,
+	Display,
+	Search,
+	Save,
+	Load,
+	MAX
+};
 
 class AdressManager
 {
@@ -14,24 +26,37 @@ public:
 
 	~AdressManager();
 
-	void DisplayMenu(int index = 0);
-	void InsertData(const string& name = "비어있음", const string& phone = "비어있음");
-	void DeleteDataByName(const string& name);
-	void DeleteDataByPhoneNumber(const string& phone);
-	void DeleteDataByIndex(int id);
+	void ReceivCommand(const int index);
+
+	void DisplayMenu(const int index = 0);
+	void DisplayAll();
 	
-	void FindDataByName(const string& name);
-	void FindDataByPhoneNumber(const string& phone);
+	void InsertData();
+	void InsertData(const string& name, const string& phone ,const string& desc);
+	
+	void DeleteData();
+	bool DeleteDataByName(const string& name);
+
+	
+	void FindData();
+
+	AdressInfo* FindDataByName(const string& name);
+	AdressInfo* FindDataByPhoneNumber(const string& phone);
+	
 	void SaveData();
-	void LoadData();
-	
+	void SaveAndLoadData();
+	void LoadData(const string& filename ="");
+
+	string currentFilename;
+	string currentCategory;
 
 protected:
-
-private:
-	string str_menu;
 	vector<char> points;
-	vector<AdressInfo> Infos;
+	vector<AdressInfo> Infos;//출력과 저장을 위한 리스트
+	map<string, AdressInfo> Infomap_namekey;//이름으로 찾기 검색을 위한 맵.
+private:
+	
+	
 };
 
 
