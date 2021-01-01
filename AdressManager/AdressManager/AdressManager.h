@@ -51,7 +51,7 @@ public:
 	string currentFilename;
 protected:
 	vector<char> points;
-	vector<AdressInfo> Infos;//출력과 저장을 위한 리스트
+	vector<AdressInfo> Infos;//출력과 저장을 위한 벡터
 	map<string, AdressInfo> Infomap_namekey;//이름으로 찾기 검색을 위한 맵.
 private:
 	void ClearData();
