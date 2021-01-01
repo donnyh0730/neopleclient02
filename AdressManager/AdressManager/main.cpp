@@ -9,7 +9,7 @@
 #define RIGHT 77
 #define UP 72
 #define DOWN 80
-#define CNT_MENU 7
+
 using namespace std;
 using namespace Json;
 
@@ -36,32 +36,71 @@ int main()
 	//	item["description"] = "더미데이터";
 	//	Object["items"].append(item);
 	//}
-	////writer->write(Object, &cout);
+	//writer->write(Object, &cout);
 	//writer->write(Object, &json_file);
 	//json_file.close();
 	AdressManager admanager;
 	char ch;
-	cout << "기본 데이터를 보려면 1 을입력하세요.\n";
-	cout << "데이터를 파일명으로 로드하려면 2 를입력하세요.\n";
+	
+	int idx = 0;
+	cout << " * 1. 예시 데이터로 시작하기 \n";
+	cout << "   2. 새로만들거나 데이터를 로드하기. \n";
 	while (true)
 	{
-		cin >> ch;
-		if (ch == '1')
+		char c;
+		c = _getch();
+		if (c == -32) {
+			c = _getch();
+			switch (c) {
+			case LEFT:
+				idx--;
+				if (idx < 0)
+					idx = 1;
+				break;
+			case RIGHT:
+				idx++;
+				if (idx > 1)
+					idx = 0;
+				break;
+			case UP:
+				idx--;
+				if (idx < 0)
+					idx = 1;
+				break;
+			case DOWN:
+				idx++;
+				if (idx > 1)
+					idx = 0;
+				break;
+			}
+		}
+		system("cls");
+		if (idx == 0)
+		{
+			cout << " * 1. 예시 데이터로 시작하기 \n";
+			cout << "   2. 새로만들거나 데이터를 로드하기. \n";
+		}
+		else
+		{
+			cout << "   1. 예시 데이터로 시작하기 \n";
+			cout << " * 2. 새로만들거나 데이터를 로드하기. \n";
+		}
+
+		if (c == 13 && idx == 0)
 		{
 			admanager.LoadData();
 			break;
 		}
-		else if (ch == '2')
+		else if (c == 13 && idx == 1)
 		{
 			string filename;
-			cout << "새로운 파일 이름을 입력하면 새로운 파일이 생성되어 작업하게됩니다." << endl;
+			cout << "기존에 없는 이름을 입력하면 새로운 파일이 생성되어 작업하게됩니다."<<endl
+				<<"기존에 있는 파일명을 입력시 해당파일을 로드합니다."<<endl
+				<<"(확장자는 생략하세요.)" << endl;
 			cin >> filename;
+			filename += ".json";
 			admanager.LoadData(filename);//기존 데이터를 읽어 옵니다.
 			break;
-		}
-		else
-		{
-			cout << "1 또는 2중에 입력해 주세요."<<endl;
 		}
 	}
 	
@@ -98,13 +137,13 @@ int main()
 			}
 			admanager.DisplayMenu(index);
 		}
-		if (c == 13)//엔터키 입력받았을때.
+		if (c == 13 && index != 6)//엔터키 입력받았을때.
 		{
 			admanager.ReceivCommand(index);
 		}
-		if (c == 'q')
+		if (c == 13 && index == 6)
 		{
-			cout << "현재정보를 저장하고 종료합니다.";
+			cout << "\n현재정보를 저장하고 종료합니다.\n";
 			admanager.SaveData();
 			return 0;
 		}

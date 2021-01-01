@@ -46,5 +46,8 @@
     <None Include="Json_data.json">
       <Filter>리소스 파일</Filter>
     </None>
+    <None Include="newfile.json">
+      <Filter>리소스 파일</Filter>
+    </None>
   </ItemGroup>
 </Project>

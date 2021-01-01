@@ -20,7 +20,7 @@ AdressManager::~AdressManager()
 }
 
 void AdressManager::ReceivCommand(const int index)
-{
+{	
 	switch (index)
 	{
 	case Command::Insert:
@@ -36,10 +36,10 @@ void AdressManager::ReceivCommand(const int index)
 		FindData();
 		break;	
 	case Command::Save:
-		SaveData();
+		SaveCurrentData();
 		break;
 	case Command::Load:
-		LoadData();
+		SaveAndLoadData();
 		break;
 	}
 }
@@ -56,6 +56,7 @@ void AdressManager::DisplayMenu(const int index)
 		else
 			points[i] = ' ';
 	}
+	cout << "현재 열린 파일 : " << currentFilename << "\n";
 	cout << "메뉴를 선택해주세요. 위아래 방향키로 메뉴를 이동할 수 있습니다.\n\n";
 
 	cout << points[0] << "  1. 주소 등록 : 주소록에 개인의 주소를 등록합니다.\n" << endl
@@ -64,7 +65,7 @@ void AdressManager::DisplayMenu(const int index)
 		<< points[3] << "  4. 검색 : 주소록의 내용을 검색할 수 있습니다.\n" << endl
 		<< points[4] << "  5. 저장 : 주소록의 내용을 현상태로 저장합니다.\n" << endl
 		<< points[5] << "  6. 불러오기 : 주소록의 내용을 저장하고 새로운 파일만들거나 불러옵니다.\n" << endl
-		<< "  종료하려면 'q'를 입력하세요." << endl;
+		<< points[6] << "  7. 저장 후 종료." << endl;
 }
 
 void AdressManager::DisplayAll()
@@ -78,8 +79,7 @@ void AdressManager::DisplayAll()
 void AdressManager::InsertData()
 {
 	string name, phone, desc;
-	cout << "데이터를 입력하여 추가합니다.\n";
-	
+	cout << "데이터를 입력하여 추가합니다. \n";
 	cout << "이름을 입력해주세요. :";
 	cin >> name;
 	cout << "\n전화번호를 입력해주세요. :";
@@ -88,7 +88,6 @@ void AdressManager::InsertData()
 	getline(cin, desc);//cin에 남은 공백을 clear한다.
 	getline(cin, desc);
 	InsertData(name, phone, desc);
-	
 }
 
 void AdressManager::InsertData(const string& name /*= "비어있음"*/, const string& phone /*= "비어있음"*/, const string& desc)
@@ -97,17 +96,17 @@ void AdressManager::InsertData(const string& name /*= "비어있음"*/, const string
 	Infomap_namekey.insert(make_pair(name, Infos.back()));
 	Infos.back().DisplayInfo();
 	SaveData();//추가삭제작업시 자동저장 수행.
-	cout << "의 정보가 추가되었습니다.\n";
+	cout << "와 같은 정보가 추가되었습니다.\n";
 }
 
 void AdressManager::DeleteData()
 {
-	cout << "지울 정보의 이름을 입력하세요.";
+	cout << "\n지울 정보의 이름을 입력하세요.\n";
 	string data;
 	cin >> data;
 	if (DeleteDataByName(data))
 	{
-		cout << "데이터를 성공적으로 지웠습니다.";
+		cout << "\n데이터를 성공적으로 지웠습니다.\n";
 		return;
 	}
 }
@@ -117,7 +116,7 @@ bool AdressManager::DeleteDataByName(const string& name)
 	//일단 map에서 O(1)시간에 삭제할 아이템이 있는지 없는지를 먼저 알면 없는 데이터에 대한 순회는 하지않아도 된다.
 	if (Infomap_namekey.find(name) == Infomap_namekey.end())
 	{
-		cout << "일치하는 데이터가 없습니다.";
+		cout << "\n일치하는 데이터가 없습니다.\n";
 		return false;
 	}	
 	else
@@ -137,7 +136,7 @@ bool AdressManager::DeleteDataByName(const string& name)
 			}
 
 		}
-		return false;
+		return true;
 	}
 }
 
@@ -183,16 +182,23 @@ void AdressManager::SaveData()
 		item["name"] = Infos[i].getName();
 		item["phone"] = Infos[i].getPhoneNumber();
 		item["description"] = Infos[i].getDescription();
-		Object.append(item);
+		Object["items"].append(item);
 	}
 	writer->write(Object, &json_file);
 	json_file.close();
 }
 
+void AdressManager::SaveCurrentData()
+{
+	SaveData();
+	cout << "\n현재 정보가 저장 되었습니다.\n" << endl;
+}
+
 void AdressManager::LoadData(const string& filename)
 {
+	ClearData();
 	currentFilename = filename;
-	if (filename.empty())
+	if (filename == "")
 		currentFilename = "json_data.json";
 
 	ifstream json_dir(currentFilename);
@@ -202,7 +208,7 @@ void AdressManager::LoadData(const string& filename)
 	Value jsondata;
 	bool check = parseFromStream(builder, json_dir, &jsondata, &errs);
 	
-	if (check)
+	if (check && 0 < jsondata.size())
 	{
 		for (unsigned int i = 0; i < jsondata["items"].size(); ++i)
 		{
@@ -215,7 +221,14 @@ void AdressManager::LoadData(const string& filename)
 		}
 	}
 	else
-		cout << "데이터 로드 실패";
+	{
+		cout << "\n기존에 없던 파일입니다. 새로운 파일을 만들었습니다.\n";
+		std::ofstream json_file;
+		json_file.open(currentFilename);	
+		json_file.close();
+		cout << "이제 데이터를 추가하고 원하는 작업을 하면됩니다.\n";
+		return;
+	}
 
 	if (!Infos.empty())
 	{
@@ -226,15 +239,22 @@ void AdressManager::LoadData(const string& filename)
 			Infomap_namekey.insert(make_pair(namekey,Infos[i]));
 		}
 	}
-	
+	cout << "\n데이터를 성공적으로 로드했습니다 현재 열린 파일 : "<<currentFilename <<"\n";
+}
+
+void AdressManager::ClearData()
+{
+	Infos.clear();
+	Infomap_namekey.clear();
 }
 
 void AdressManager::SaveAndLoadData()
 {
 	SaveData();
 	string str;
-	cout << "불러올 파일 이름을 입력하세요.(새로운 파일이름 입력시 새로운 카테고리의 데이터파일이 만들어 집니다.) : ";
+	cout << "\n불러올 파일 이름을 입력하세요.(새로운 파일이름 입력시 새로운 빈 데이터파일이 만들어 집니다. 확장자는 생략하세요.) : \n";
 	cin >> str;
+	str += ".json";
 	LoadData(str);
 }
 

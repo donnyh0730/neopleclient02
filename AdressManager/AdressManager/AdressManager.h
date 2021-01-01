@@ -16,6 +16,7 @@ enum Command
 	Search,
 	Save,
 	Load,
+	Quit,
 	MAX
 };
 
@@ -41,21 +42,19 @@ public:
 	void FindData();
 
 	AdressInfo* FindDataByName(const string& name);
-	AdressInfo* FindDataByPhoneNumber(const string& phone);
 	
 	void SaveData();
+	void SaveCurrentData();
 	void SaveAndLoadData();
-	void LoadData(const string& filename ="");
+	void LoadData(const string& filename = "");
 
 	string currentFilename;
-	string currentCategory;
-
 protected:
 	vector<char> points;
 	vector<AdressInfo> Infos;//출력과 저장을 위한 리스트
 	map<string, AdressInfo> Infomap_namekey;//이름으로 찾기 검색을 위한 맵.
 private:
-	
+	void ClearData();
 	
 };
 

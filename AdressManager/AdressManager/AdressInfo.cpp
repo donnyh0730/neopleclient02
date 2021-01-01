@@ -56,7 +56,7 @@ void AdressInfo::setDescription(const string& _desc)
 
 void AdressInfo::DisplayInfo()
 {
-	cout << "이름: " << name << " 전화번호 : "<<phone<<" 설명: "<<description<<endl;
+	cout << "이름: " << name << " // 전화번호 : "<<phone<<" // 설명: "<<description<<endl;
 }
 
 AdressInfo* AdressInfo::get()
